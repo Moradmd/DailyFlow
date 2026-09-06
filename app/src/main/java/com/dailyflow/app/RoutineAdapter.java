@@ -32,6 +32,10 @@ public class RoutineAdapter extends RecyclerView.Adapter<RoutineAdapter.RoutineV
         this.storage = storage;
     }
 
+    public List<Routine> getRoutines() {
+        return routines;
+    }
+
     public void setRoutines(List<Routine> routines) {
         this.routines = filterTodayRoutines(routines);
         notifyDataSetChanged();

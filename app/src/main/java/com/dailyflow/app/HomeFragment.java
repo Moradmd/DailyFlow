@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements RoutineAdapter.OnRoutineLi
 
         int total = adapter.getItemCount();
         int completed = 0;
-        for (Routine r : adapter.routines) {
+        for (Routine r : adapter.getRoutines()) {
             if (r.done) completed++;
         }
 
