@@ -127,8 +127,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:text="M"
-                android:cornerRadius="20dp"/>
+                android:text="M"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTue"
@@ -136,8 +135,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="T"
-                android:layout_marginStart="6dp"
-                android:cornerRadius="20dp"/>
+                android:layout_marginStart="6dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWed"
@@ -145,8 +143,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="W"
-                android:layout_marginStart="6dp"
-                android:cornerRadius="20dp"/>
+                android:layout_marginStart="6dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnThu"
@@ -154,8 +151,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="T"
-                android:layout_marginStart="6dp"
-                android:cornerRadius="20dp"/>
+                android:layout_marginStart="6dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnFri"
@@ -163,8 +159,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="F"
-                android:layout_marginStart="6dp"
-                android:cornerRadius="20dp"/>
+                android:layout_marginStart="6dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSat"
@@ -172,8 +167,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="S"
-                android:layout_marginStart="6dp"
-                android:cornerRadius="20dp"/>
+                android:layout_marginStart="6dp"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSun"
@@ -181,8 +175,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:text="S"
-                android:layout_marginStart="6dp"
-                android:cornerRadius="20dp"/>
+                android:layout_marginStart="6dp"/>
 
         </LinearLayout>
 
