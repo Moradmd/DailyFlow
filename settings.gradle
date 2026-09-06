@@ -1,4 +1,6 @@
 pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
-dependencyResolutionManagement { repositories { google(); mavenCentral() } }
+settings {
+    dependencyResolutionManagement { repositories { google(); mavenCentral() } }
+}
 rootProject.name = "DailyFlow"
 include ':app'
