@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#FF6B6B</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#FFE0E0</color>
+    <color name="onPrimaryContainer">#4A2C2C</color>
+    <color name="secondary">#4ECDC4</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="secondaryContainer">#D4F5F2</color>
+    <color name="onSecondaryContainer">#1A3A38</color>
+    <color name="tertiary">#FFB74D</color>
+    <color name="surface">#FFF9F9</color>
+    <color name="onSurface">#2D2D3A</color>
+    <color name="surfaceVariant">#F5F0F0</color>
+    <color name="onSurfaceVariant">#6B6B7B</color>
+    <color name="outline">#E0D8D8</color>
+    <color name="background">#FFF5F5</color>
+    <color name="error">#FF5252</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="streak_fire">#FF9800</color>
+</resources>
