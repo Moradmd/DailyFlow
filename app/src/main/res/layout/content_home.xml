@@ -46,13 +46,15 @@
                 android:textSize="16sp"
                 android:textColor="@color/onSurface"/>
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
+            <ProgressBar
                 android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="120dp"
                 android:layout_height="8dp"
-                android:indeterminate="false"
+                android:max="100"
                 android:progress="0"
-                android:max="100"/>
+                android:progressTint="@color/primary"
+                android:progressBackgroundTint="@color/surfaceVariant"/>
 
         </LinearLayout>
 

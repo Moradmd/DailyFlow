@@ -1,35 +1,30 @@
 package com.dailyflow.app;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.fragment.app.Fragment;
-import java.util.Random;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class StatsFragment extends Fragment {
+public class StatsActivity extends AppCompatActivity {
 
     private RoutineStorage storage;
     private TextView tvTotalCompleted;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_stats, container, false);
-        storage = new RoutineStorage(requireContext());
-        tvTotalCompleted = view.findViewById(R.id.tvTotalCompleted);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        storage = new RoutineStorage(this);
+        setContentView(R.layout.content_stats);
 
+        tvTotalCompleted = findViewById(R.id.tvTotalCompleted);
         int total = storage.getTotalCompleted();
         tvTotalCompleted.setText(String.valueOf(total));
 
-        drawWeeklyChart(view);
-        return view;
+        drawWeeklyChart();
     }
 
-    private void drawWeeklyChart(View view) {
-        LinearLayout llChart = view.findViewById(R.id.llChart);
+    private void drawWeeklyChart() {
+        LinearLayout llChart = findViewById(R.id.llChart);
         llChart.removeAllViews();
 
         int[] weekly = storage.getWeeklyData();
@@ -43,7 +38,7 @@ public class StatsFragment extends Fragment {
             if (heightPercent == 0 && weekly[i] > 0) heightPercent = 10;
             if (heightPercent == 0) heightPercent = 4;
 
-            View bar = new View(getContext());
+            View bar = new View(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -52,15 +47,14 @@ public class StatsFragment extends Fragment {
             params.setMargins(6, 0, 6, 0);
             bar.setLayoutParams(params);
 
-            View barInner = new View(getContext());
+            View barInner = new View(this);
             LinearLayout.LayoutParams innerParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
             );
             innerParams.weight = heightPercent;
             barInner.setLayoutParams(innerParams);
-
-            barInner.setBackgroundColor(getContext().getColor(R.color.primary));
+            barInner.setBackgroundColor(getColor(R.color.primary));
 
             ((LinearLayout) bar).addView(barInner);
             llChart.addView(bar);

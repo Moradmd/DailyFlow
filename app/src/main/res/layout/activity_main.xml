@@ -21,16 +21,4 @@
         app:itemTextColor="@color/bottom_nav_selector"
         app:menu="@menu/bottom_nav"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="72dp"
-        android:src="@drawable/ic_add"
-        android:tint="@color/onPrimary"
-        app:backgroundTint="@color/primary"
-        app:elevation="6dp"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
