@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DailyFlow</title>
+<style>
+  :root {
+    --primary: #FF6B6B;
+    --primary-dark: #FF8A80;
+    --secondary: #4ECDC4;
+    --bg: #FFF5F5;
+    --surface: #FFFFFF;
+    --text: #2D2D3A;
+    --text-secondary: #6B6B7B;
+    --border: #E0D8D8;
+    --shadow: rgba(0,0,0,0.08);
+    --streak: #FF9800;
+  }
+  .dark {
+    --bg: #16161F;
+    --surface: #1E1E2E;
+    --text: #E0E0E0;
+    --text-secondary: #A0A0B0;
+    --border: #3A3A4A;
+    --shadow: rgba(0,0,0,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  .screen { display: none; min-height: 100vh; padding: 16px; padding-bottom: 80px; }
+  .screen.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 28px;
+    background: var(--primary);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-secondary { background: var(--secondary); }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+  }
+  .input {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    margin-bottom: 16px;
+    outline: none;
+  }
+  .input:focus { border-color: var(--primary); }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 12px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--primary); }
+  .nav-icon { font-size: 22px; display: block; }
+  .routine-item {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    background: var(--surface);
+    border-radius: 16px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+  }
+  .routine-check {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .routine-check.done { background: var(--primary); }
+  .routine-check.done::after { content: '✓'; color: white; font-size: 14px; }
+  .routine-info { flex: 1; }
+  .routine-name { font-weight: 600; font-size: 15px; }
+  .routine-time { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  .chip {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: var(--border);
+    color: var(--text);
+    font-size: 13px;
+    margin: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chip.active { background: var(--primary); color: white; }
+  .day-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .day-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+  .chart-bar {
+    flex: 1;
+    background: var(--border);
+    border-radius: 6px;
+    margin: 0 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 140px;
+  }
+  .chart-fill {
+    background: linear-gradient(180deg, var(--primary), var(--secondary));
+    border-radius: 6px;
+    transition: height 0.5s ease;
+    min-height: 4px;
+  }
+  .switch {
+    width: 48px;
+    height: 28px;
+    background: var(--border);
+    border-radius: 14px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .switch.on { background: var(--primary); }
+  .switch::after {
+    content: '';
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .switch.on::after { transform: translateX(20px); }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+  }
+  .empty-state-icon { font-size: 64px; margin-bottom: 16px; }
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: var(--streak);
+  }
+  .dark .streak-badge { background: linear-gradient(135deg, #3E2723, #4E342E); }
+</style>
+</head>
+<body>
+
+<div id="onboarding" class="screen active">
+  <div style="text-align:center;padding-top:80px;">
+    <div style="width:120px;height:120px;background:var(--primary);border-radius:50%;margin:0 auto 32px;display:flex;align-items:center;justify-content:center;font-size:48px;">✓</div>
+    <h1 style="font-size:28px;margin-bottom:12px;">Welcome to DailyFlow</h1>
+    <p style="color:var(--text-secondary);margin-bottom:32px;padding:0 20px;">Build your best routine, one day at a time.</p>
+    <input type="text" id="onboardingName" class="input" placeholder="Your Name" style="text-align:center;">
+    <button class="btn" onclick="completeOnboarding()">Get Started</button>
+  </div>
+</div>
+
+<div id="home" class="screen">
+  <h1 style="font-size:24px;margin-bottom:4px;" id="greeting">Hello!</h1>
+  <p style="color:var(--text-secondary);margin-bottom:16px;" id="dateDisplay">Today</p>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="progressText">0% Completed</span>
+      <div class="progress-bar" style="width:120px;"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-bottom:16px;">
+    <span class="streak-badge">🔥 <span id="streakCount">0</span> Day Streak</span>
+  </div>
+  <h2 style="font-size:18px;margin-bottom:8px;">Today's Routines</h2>
+  <div id="routinesList"></div>
+</div>
+
+<div id="add" class="screen">
+  <h1 style="font-size:24px;margin-bottom:24px;">Add Routine</h1>
+  <input type="text" id="routineName" class="input" placeholder="Routine Name">
+  <input type="time" id="routineTime" class="input" placeholder="Time">
+  <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">Category</p>
+  <div id="categoryChips" style="margin-bottom:16px;">
+    <span class="chip active" data-cat="Morning">Morning</span>
+    <span class="chip" data-cat="Work">Work</span>
+    <span class="chip" data-cat="Health">Health</span>
+    <span class="chip" data-cat="Study">Study</span>
+    <span class="chip" data-cat="Night">Night</span>
+  </div>
+  <p style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">Days</p>
+  <div id="dayButtons" style="text-align:center;margin-bottom:24px;">
+    <button class="day-btn" data-day="0">M</button>
+    <button class="day-btn" data-day="1">T</button>
+    <button class="day-btn" data-day="2">W</button>
+    <button class="day-btn" data-day="3">T</button>
+    <button class="day-btn" data-day="4">F</button>
+    <button class="day-btn" data-day="5">S</button>
+    <button class="day-btn" data-day="6">S</button>
+  </div>
+  <button class="btn" onclick="saveRoutine()">Save Routine</button>
+</div>
+
+<div id="stats" class="screen">
+  <h1 style="font-size:24px;margin-bottom:16px;">Statistics</h1>
+  <div class="card">
+    <h3 style="margin-bottom:12px;">Weekly Progress</h3>
+    <div id="chart" style="display:flex;align-items:flex-end;height:140px;"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;">
+      <span style="font-size:11px;color:var(--text-secondary);">M</span>
+      <span style="font-size:11px;color:var(--text-secondary);">T</span>
+      <span style="font-size:11px;color:var(--text-secondary);">W</span>
+      <span style="font-size:11px;color:var(--text-secondary);">T</span>
+      <span style="font-size:11px;color:var(--text-secondary);">F</span>
+      <span style="font-size:11px;color:var(--text-secondary);">S</span>
+      <span style="font-size:11px;color:var(--text-secondary);">S</span>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Total Completed</span>
+      <span id="totalCompleted" style="font-size:28px;font-weight:700;color:var(--primary);">0</span>
+    </div>
+  </div>
+  <div class="card" style="background:linear-gradient(135deg, var(--primary), var(--secondary));color:white;">
+    <h3 style="margin-bottom:4px;">Stay Consistent!</h3>
+    <p style="opacity:0.9;font-size:14px;">Every small step counts. Keep going!</p>
+  </div>
+</div>
+
+<div id="settings" class="screen">
+  <h1 style="font-size:24px;margin-bottom:24px;">Settings</h1>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <span>Dark Mode</span>
+      <div class="switch" id="darkModeSwitch" onclick="toggleDarkMode()"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Notifications</span>
+      <div class="switch on" id="notifSwitch" onclick="toggleNotif()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span>Language</span>
+      <button class="btn-outline" style="width:auto;padding:8px 20px;border-radius:20px;font-size:14px;" onclick="toggleLang()" id="langBtn">English</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:4px;">About DailyFlow</h3>
+    <p style="color:var(--text-secondary);font-size:14px;margin-top:8px;line-height:1.5;">DailyFlow v1.0<br>Build your best routine, one day at a time.</p>
+  </div>
+</div>
+
+<div class="nav" id="bottomNav" style="display:none;">
+  <div class="nav-item active" data-screen="home" onclick="showScreen('home')">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </div>
+  <div class="nav-item" data-screen="add" onclick="showScreen('add')">
+    <span class="nav-icon">➕</span>
+    <span>Add</span>
+  </div>
+  <div class="nav-item" data-screen="stats" onclick="showScreen('stats')">
+    <span class="nav-icon">📊</span>
+    <span>Stats</span>
+  </div>
+  <div class="nav-item" data-screen="settings" onclick="showScreen('settings')">
+    <span class="nav-icon">⚙️</span>
+    <span>Settings</span>
+  </div>
+</div>
+
+<script>
+let routines = JSON.parse(localStorage.getItem('routines') || '[]');
+let userName = localStorage.getItem('userName') || '';
+let streak = parseInt(localStorage.getItem('streak') || '0');
+let lastDate = localStorage.getItem('lastDate') || '';
+let totalCompleted = parseInt(localStorage.getItem('totalCompleted') || '0');
+let weeklyData = JSON.parse(localStorage.getItem('weeklyData') || '[0,0,0,0,0,0,0]');
+let darkMode = localStorage.getItem('darkMode') === 'true';
+let lang = localStorage.getItem('lang') || 'en';
+let selectedCategory = 'Morning';
+let selectedDays = new Set();
+
+const i18n = {
+  en: { greeting: 'Hello', today: 'Today', routines: "Today's Routines", noRoutines: 'No routines yet', addFirst: 'Add your first routine', streak: 'Day Streak', completed: 'Completed', totalCompleted: 'Total Completed', motivation: 'Stay Consistent!', motivationText: 'Every small step counts. Keep going!', aboutTitle: 'About DailyFlow', aboutText: 'DailyFlow v1.0\nBuild your best routine, one day at a time.', darkMode: 'Dark Mode', notifications: 'Notifications', language: 'Language' },
+  bn: { greeting: 'হ্যালো', today: 'আজ', routines: "আজকের রুটিন", noRoutines: 'এখনো কোনো রুটিন নেই', addFirst: 'প্রথম রুটিন যোগ করুন', streak: 'দিনের স্ট্রিক', completed: 'সম্পন্ন', totalCompleted: 'মোট সম্পন্ন', motivation: 'নিরন্তর চেষ্টা দিন!', motivationText: 'প্রতিটি ছোট পদক্ষেপ মূল্যবান। এগিয়ে চলুন!', aboutTitle: 'দেইলিফুল পরিচয়', aboutText: 'দেইলিফুল v1.0\nপ্রতিদিনের সেরা রুটিন তৈরি করুন।', darkMode: 'ডার্ক মোড', notifications: 'নোটিফিকেশন', language: 'ভাষা' }
+};
+
+function t(key) { return i18n[lang]?.[key] || i18n.en[key] || key; }
+
+function saveData() {
+  localStorage.setItem('routines', JSON.stringify(routines));
+  localStorage.setItem('userName', userName);
+  localStorage.setItem('streak', streak);
+  localStorage.setItem('lastDate', lastDate);
+  localStorage.setItem('totalCompleted', totalCompleted);
+  localStorage.setItem('weeklyData', JSON.stringify(weeklyData));
+}
+
+function getTodayIndex() {
+  const day = new Date().getDay();
+  return day === 0 ? 6 : day - 1;
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-screen="${name}"]`)?.classList.add('active');
+  if (name === 'home') renderHome();
+  if (name === 'stats') renderStats();
+  if (name === 'settings') renderSettings();
+}
+
+function completeOnboarding() {
+  const name = document.getElementById('onboardingName').value.trim();
+  if (!name) return;
+  userName = name;
+  localStorage.setItem('userName', name);
+  localStorage.setItem('onboardingDone', 'true');
+  document.getElementById('onboarding').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+  document.getElementById('bottomNav').style.display = 'flex';
+  renderHome();
+}
+
+function renderHome() {
+  document.getElementById('greeting').textContent = t('greeting') + ', ' + (userName || 'User') + '!';
+  const now = new Date();
+  document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  
+  const todayIdx = getTodayIndex();
+  const todayRoutines = routines.filter(r => r.days.includes(todayIdx));
+  const list = document.getElementById('routinesList');
+  
+  if (todayRoutines.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><p>${t('noRoutines')}</p><p style="font-size:13px;margin-top:4px;">${t('addFirst')}</p></div>`;
+  } else {
+    list.innerHTML = todayRoutines.map((r, i) => {
+      const idx = routines.indexOf(r);
+      return `<div class="routine-item">
+        <div class="routine-check ${r.done ? 'done' : ''}" onclick="toggleRoutine(${idx})"></div>
+        <div class="routine-info">
+          <div class="routine-name">${r.name}</div>
+          <div class="routine-time">${r.time} · ${r.category}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  
+  const completed = todayRoutines.filter(r => r.done).length;
+  const total = todayRoutines.length;
+  const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+  document.getElementById('progressText').textContent = pct + '% ' + t('completed');
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('streakCount').textContent = streak;
+}
+
+function toggleRoutine(idx) {
+  routines[idx].done = !routines[idx].done;
+  if (routines[idx].done) {
+    totalCompleted++;
+    updateStreak();
+    weeklyData[getTodayIndex()]++;
+  } else {
+    totalCompleted = Math.max(0, totalCompleted - 1);
+  }
+  saveData();
+  renderHome();
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (lastDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (lastDate === yesterday) {
+      streak++;
+    } else if (lastDate !== '' && lastDate !== today) {
+      streak = 1;
+    } else if (lastDate === '') {
+      streak = 1;
+    }
+    lastDate = today;
+  }
+}
+
+function saveRoutine() {
+  const name = document.getElementById('routineName').value.trim();
+  const time = document.getElementById('routineTime').value;
+  if (!name || !time) return alert('Please fill all fields');
+  const days = Array.from(selectedDays).map(Number);
+  routines.push({ name, time, category: selectedCategory, days, done: false, id: Date.now() });
+  saveData();
+  document.getElementById('routineName').value = '';
+  document.getElementById('routineTime').value = '';
+  selectedDays.clear();
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+  showScreen('home');
+}
+
+function renderStats() {
+  document.getElementById('totalCompleted').textContent = totalCompleted;
+  const max = Math.max(...weeklyData, 1);
+  const chart = document.getElementById('chart');
+  chart.innerHTML = weeklyData.map(val => {
+    const h = max > 0 ? Math.max((val / max) * 100, 4) : 4;
+    return `<div class="chart-bar"><div class="chart-fill" style="height:${h}%"></div></div>`;
+  }).join('');
+}
+
+function renderSettings() {
+  document.getElementById('darkModeSwitch').className = 'switch' + (darkMode ? ' on' : '');
+  document.getElementById('langBtn').textContent = lang === 'en' ? 'English' : 'বাংলা';
+  if (darkMode) document.body.classList.add('dark');
+  else document.body.classList.remove('dark');
+}
+
+function toggleDarkMode() {
+  darkMode = !darkMode;
+  localStorage.setItem('darkMode', darkMode);
+  renderSettings();
+}
+
+function toggleNotif() {
+  const sw = document.getElementById('notifSwitch');
+  sw.classList.toggle('on');
+}
+
+function toggleLang() {
+  lang = lang === 'en' ? 'bn' : 'en';
+  localStorage.setItem('lang', lang);
+  renderSettings();
+  renderHome();
+}
+
+document.querySelectorAll('.chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    selectedCategory = c.dataset.cat;
+  });
+});
+
+document.querySelectorAll('.day-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    b.classList.toggle('selected');
+    const day = parseInt(b.dataset.day);
+    if (selectedDays.has(day)) selectedDays.delete(day);
+    else selectedDays.add(day);
+  });
+});
+
+if (localStorage.getItem('onboardingDone')) {
+  document.getElementById('onboarding').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+  document.getElementById('bottomNav').style.display = 'flex';
+  renderHome();
+}
+
+if (darkMode) document.body.classList.add('dark');
+</script>
+</body>
+</html>
