@@ -5,6 +5,5 @@
         <item name="android:colorPrimaryDark">#FF8A80</item>
         <item name="android:colorAccent">#4ECDC4</item>
         <item name="android:windowBackground">#FFF5F5</item>
-        <item name="android:statusBarColor">#FF6B6B</item>
     </style>
 </resources>
