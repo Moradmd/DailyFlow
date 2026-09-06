@@ -61,7 +61,6 @@ public class StatsFragment extends Fragment {
             barInner.setLayoutParams(innerParams);
 
             barInner.setBackgroundColor(getContext().getColor(R.color.primary));
-            barInner.setCornerRadius(8f);
 
             ((LinearLayout) bar).addView(barInner);
             llChart.addView(bar);

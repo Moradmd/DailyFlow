@@ -44,9 +44,10 @@ public class AddRoutineFragment extends Fragment {
             btn.setOnClickListener(v -> {
                 boolean selected = !(boolean) v.getTag();
                 v.setTag(selected);
-                ((MaterialButton) v).setTextColor(selected
+                int color = selected
                         ? requireContext().getColor(R.color.primary)
-                        : requireContext().getColor(R.color.onSurface));
+                        : requireContext().getColor(R.color.onSurface);
+                ((MaterialButton) v).setTextColor(color);
             });
         }
 
