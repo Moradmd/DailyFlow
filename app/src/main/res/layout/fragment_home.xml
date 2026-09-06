@@ -52,10 +52,7 @@
                 android:layout_height="8dp"
                 android:indeterminate="false"
                 android:progress="0"
-                android:max="100"
-                app:trackColor="@color/surfaceVariant"
-                app:indicatorColor="@color/primary"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:max="100"/>
 
         </LinearLayout>
 
